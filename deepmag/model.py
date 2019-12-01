@@ -63,6 +63,38 @@ class Manipulator(nn.Module):
         return enc_shape_a + self.conv2(g * amp)
 
 
+class Decoder(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.upsample = nn.Upsample(scale_factor=2)
+        self.res = nn.Sequential(
+            ResidualBlock(64, 64, 3, 1),
+            ResidualBlock(64, 64, 3, 1),
+            ResidualBlock(64, 64, 3, 1),
+            ResidualBlock(64, 64, 3, 1),
+            ResidualBlock(64, 64, 3, 1),
+            ResidualBlock(64, 64, 3, 1),
+            ResidualBlock(64, 64, 3, 1),
+            ResidualBlock(64, 64, 3, 1),
+            ResidualBlock(64, 64, 3, 1),
+        )
+        self.deconv = nn.Sequential(
+            nn.Upsample(scale_factor=2),
+            nn.ReflectionPad2d(1),
+            nn.Conv2d(64, 32, 3, 1),
+            nn.ReLU(),
+            nn.ReflectionPad2d(3),
+            nn.Conv2d(32, 3, 7, 1),
+        )
+
+    def forward(self, enc_texture, enc_shape):
+        y = self.upsample(enc_texture)
+        y = torch.cat((y, enc_shape), dim=1)
+        y = self.res(y)
+        y = self.deconv(y)
+        return y
+
+
 class ResidualBlock(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, stride):
         super().__init__()
