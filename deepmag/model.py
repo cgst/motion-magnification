@@ -43,6 +43,26 @@ class Encoder(nn.Module):
         return texture_y, shape_y
 
 
+class Manipulator(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.conv1 = nn.Sequential(
+            nn.ReflectionPad2d(1),
+            nn.Conv2d(32, 32, 3, 1),
+            nn.ReLU(),
+        )
+        self.conv2 = nn.Sequential(
+            nn.ReflectionPad2d(1),
+            nn.Conv2d(32, 32, 3, 1),
+            ResidualBlock(32, 32, 3, 1),
+        )
+
+    def forward(self, enc_shape_a, enc_shape_b, amp_f):
+        g = self.conv1(enc_shape_b - enc_shape_a)
+        amp = amp_f.reshape(len(amp_f), 1, 1, 1)
+        return enc_shape_a + self.conv2(g * amp)
+
+
 class ResidualBlock(nn.Module):
     def __init__(self, in_channels, out_channels, kernel_size, stride):
         super().__init__()

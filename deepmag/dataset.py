@@ -10,7 +10,7 @@ class MotionMag(datasets.VisionDataset):
     def __init__(self, root, image_loader=default_loader, transform=None):
         super().__init__(root, transform=transform)
         amp_path = os.path.join(self.root, "train_mf.txt")
-        self.amp_f = torch.from_numpy(np.loadtxt(amp_path))
+        self.amp_f = torch.from_numpy(np.loadtxt(amp_path, dtype=np.float32))
         self.image_loader = image_loader
 
     def __len__(self):
