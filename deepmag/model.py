@@ -109,3 +109,18 @@ class ResidualBlock(nn.Module):
     def forward(self, x):
         y = self.block(x)
         return x + y
+
+
+class MagNet(nn.Module):
+    def __init__(self):
+        super().__init__()
+        self.encoder = Encoder()
+        self.manipulator = Manipulator()
+        self.decoder = Decoder()
+
+    def forward(self, frame_a, frame_b, amp_f):
+        _, shape_a = self.encoder(frame_a)
+        texture_b, shape_b = self.encoder(frame_b)
+        shape_amp = self.manipulator(shape_a, shape_b, amp_f)
+        frame_amp = self.decoder(texture_b, shape_amp)
+        return frame_amp
