@@ -1,0 +1,6 @@
+torch
+torchvision
+tqdm
+PIL
+matplotlib
+torchsummary
