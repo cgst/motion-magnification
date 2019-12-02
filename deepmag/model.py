@@ -57,10 +57,10 @@ class Manipulator(nn.Module):
             ResidualBlock(32, 32, 3, 1),
         )
 
-    def forward(self, enc_shape_a, enc_shape_b, amp_f):
-        g = self.conv1(enc_shape_b - enc_shape_a)
+    def forward(self, shape_a, shape_b, amp_f):
+        g = self.conv1(shape_b - shape_a)
         amp = amp_f.reshape(len(amp_f), 1, 1, 1)
-        return enc_shape_a + self.conv2(g * amp)
+        return shape_a + self.conv2(g * amp)
 
 
 class Decoder(nn.Module):
@@ -87,9 +87,9 @@ class Decoder(nn.Module):
             nn.Conv2d(32, 3, 7, 1),
         )
 
-    def forward(self, enc_texture, enc_shape):
-        y = self.upsample(enc_texture)
-        y = torch.cat((y, enc_shape), dim=1)
+    def forward(self, texture, shape):
+        y = self.upsample(texture)
+        y = torch.cat((y, shape), dim=1)
         y = self.res(y)
         y = self.deconv(y)
         return y
@@ -119,8 +119,8 @@ class MagNet(nn.Module):
         self.decoder = Decoder()
 
     def forward(self, frame_a, frame_b, amp_f):
-        _, shape_a = self.encoder(frame_a)
+        texture_a, shape_a = self.encoder(frame_a)
         texture_b, shape_b = self.encoder(frame_b)
         shape_amp = self.manipulator(shape_a, shape_b, amp_f)
         frame_amp = self.decoder(texture_b, shape_amp)
-        return frame_amp
+        return frame_amp, (texture_a, shape_a), (texture_b, shape_b)
