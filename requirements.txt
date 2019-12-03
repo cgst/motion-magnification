@@ -5,3 +5,4 @@ PIL
 matplotlib
 torchsummary
 clize
+moviepy
