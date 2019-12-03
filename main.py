@@ -1,3 +1,4 @@
+import logging
 import os
 import time
 
@@ -17,11 +18,16 @@ from torchvision.transforms.functional import to_pil_image
 
 
 def train(dataset_root_dir, model_output_dir, *, num_epochs=3, batch_size=4,
-          device="cuda:0", regularization_weight=0.1, learning_rate=0.0001):
+          device="cuda:0", regularization_weight=0.1, learning_rate=0.0001,
+          skip_epochs=0, load_model_path=None):
     device = torch.device(device)
     ds = dataset.from_dir(dataset_root_dir)
-    model = MagNet().to(device)
-    with trange(num_epochs, desc="Epoch") as pbar:
+    if load_model_path:
+        model = torch.load(load_model_path).to(device)
+        logging.info("Loaded model from %s", load_model_path)
+    else:
+        model = MagNet().to(device)
+    with trange(skip_epochs, num_epochs, 1, desc="Epoch") as pbar:
         for epoch_idx in pbar:
             train_epoch(model, ds, device, learning_rate=learning_rate,
                         batch_size=batch_size, reg_weight=regularization_weight)
@@ -69,4 +75,5 @@ def amplify(model_path, video_path, *, amplification=1, batch_size=4, device="cu
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     clize.run((train, amplify))
