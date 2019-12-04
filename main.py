@@ -49,10 +49,10 @@ def _video_output_path(input_path, amp_f):
     return output_path
 
 
-def amplify(model_path, video_path, *, amplification=1.0, batch_size=4, device="cuda:0", skip_frames=1):
+def amplify(model_path, input_video, *, amplification=1.0, device="cuda:0", skip_frames=1):
     device = torch.device(device)
     model = torch.load(model_path).to(device)
-    video = VideoFileClip(video_path)
+    video = VideoFileClip(input_video)
     _to_tensor = transforms.ToTensor()
     last_frames = []
     num_skipped_frames = 5
@@ -74,7 +74,19 @@ def amplify(model_path, video_path, *, amplification=1.0, batch_size=4, device="
         return pred_frame
 
     amp_video = video.fl_image(_video_process_frame)
-    amp_video.write_videofile(_video_output_path(video_path, amplification))
+    output_path = _video_output_path(input_video, amplification)
+    amp_video.write_videofile(output_path)
+    return output_path
+
+
+def demo(model_path, input_video, output_video, *amplification_factors, device="cuda:0",
+         skip_frames=1):
+    amplified = []
+    for amp_f in amplification_factors:
+        path = amplify(model_path, input_video, amplification=amp_f,
+                       device=device, skip_frames=skip_frames)
+        amplified.append(path)
+    collage(output_video, input_video, *amplified)
 
 
 def collage(output_video, *input_videos):
@@ -99,8 +111,9 @@ def collage(output_video, *input_videos):
     final_clip = clips_array([input_clips[i:i+num_columns]
                               for i in range(0, len(input_clips), num_columns)])
     final_clip.write_videofile(output_video, audio=False)
+    return output_video
 
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    clize.run((train, amplify, collage))
+    clize.run((train, amplify, demo, collage))
