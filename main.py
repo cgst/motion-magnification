@@ -67,7 +67,7 @@ def amplify(model_path, input_video, *, amplification=1.0, device="cuda:0", skip
         amp_f_tensor = torch.tensor(
             [[float(amplification)]], dtype=torch.float, device=device)
         pred_frame, _, _ = model.forward(last_frames[0], frame, amp_f_tensor)
-        pred_frame = to_pil_image(pred_frame.squeeze(0).detach().cpu())
+        pred_frame = to_pil_image(pred_frame.squeeze(0).clamp(0, 1).detach().cpu())
         pred_frame = np.array(pred_frame)
         last_frames.append(frame)
         last_frames = last_frames[-num_skipped_frames:]
@@ -103,7 +103,7 @@ def collage(output_video, *input_videos):
         clip = CompositeVideoClip((video_clip, text_clip), use_bgclip=True)
         input_clips.append(clip)
     if len(input_clips) < 4:
-        num_columns = len(input_videos)
+        num_columns = 1
     elif len(input_clips) < 5:
         num_columns = 2
     else:
