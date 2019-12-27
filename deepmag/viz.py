@@ -30,7 +30,7 @@ def show_pred(frame_a, frame_b, amp_f, frame_pred):
     grid[0].imshow(frame_a)
     grid[0].title.set_text('A')
     grid[1].imshow(frame_b)
-    grid[1].title.set_text('B')
+    grid[1].title.set_text('Amplified (Ground Truth)')
     grid[2].imshow(frame_pred)
     grid[2].title.set_text('Predicted Frame')
     grid[3].imshow(ImageChops.subtract(frame_pred, frame_b))
