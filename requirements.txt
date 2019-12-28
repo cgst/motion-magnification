@@ -1,8 +1,8 @@
 torch
 torchvision
 tqdm
-PIL
 matplotlib
 torchsummary
 clize
 moviepy
+pillow
