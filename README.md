@@ -1,8 +1,10 @@
-# Video Motion Amplification
+# Video Motion Magnification
 
 This repository implements [T. Oh, R. Jaroensri, C. Kim, M. Elgharib, F. Durand, W. Freeman, W. Matusik "Learning-based Video Motion Magnification" arXiv preprint arXiv:1804.02684 (2018)](https://people.csail.mit.edu/tiam/deepmag/) in PyTorch.
 
 Please visit the homepage of the research publication above to see the authors' excellent paper, high-quality TensorFlow code, and a ready-to-use training dataset. The authors did an amazing job, which made it easy for me to create this PyTorch implementation. 🙏🏽
+
+"Motion magnification" means you pick up and amplify small motions so they're easier to see. It's like a microscope for motion.
 
 ## Samples
 
