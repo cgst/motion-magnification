@@ -39,6 +39,9 @@ First, [download and extract the training dataset](https://groups.csail.mit.edu/
 
 Example train commands:
 
+    # Get CLI help and adjust training parameters with flags.
+    python main.py train -h
+
     # Train from scratch - this will save a model on disk after each epoch.
     python main.py train data/train data/models --num-epochs=10
 
