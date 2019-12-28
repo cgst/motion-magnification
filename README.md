@@ -6,9 +6,9 @@ Please visit the homepage of the research publication above to see the authors' 
 
 ## Samples
 
-**👉 [Click here to see sample videos from this implementation](https://twitter.com/cgst/status/1210691577078636544)**
+**👉 [Click here to see sample videos from this implementation](https://twitter.com/cgst/status/1210691577078636544) 👈**
 
-You can download sample videos [here](https://github.com/cgst/motion-magnification/tree/master/data/examples).
+You can download the videos [here](https://github.com/cgst/motion-magnification/tree/master/data/examples).
 
 ## Set up
 
